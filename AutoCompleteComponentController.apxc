@@ -1,0 +1,42 @@
+public class AutoCompleteComponentController {
+    
+ public String searchTerm{get;set;}
+  
+  /*
+  * @param String
+  * @return List<AccountWrapper>
+  *
+  * This methos takes String as a input and executes an SOSL query on all fields of Account object to search for input string.
+  * Then this method creates a object of AccountWrapper class and saves all retrieved Account's Id and Name in that. And returns
+  * List of Account Wrapper class.
+  */
+  @RemoteAction  
+  public static List<AccountWrapper> getSearchSuggestions(String searchString){  
+       List<AccountWrapper> accountWrappers = new List<AccountWrapper>();  
+       List<List<sObject>> searchObjects = [FIND :searchString + '*' IN ALL FIELDS RETURNING Account (Id, Name)];  
+       if(!searchObjects.isEmpty()){  
+            for(List<SObject> objects : searchObjects){  
+                 for(SObject obj : objects){
+                      if(obj.getSObjectType().getDescribe().getName().equals('Account')){  
+                           Account acct = (Account)obj;  
+                           accountWrappers.add(new AccountWrapper(acct.name, acct.Id));  
+                      } 
+                 }  
+            }  
+       }  
+       return accountWrappers;  
+  }  
+ 
+ /*
+ * AccountWrapper Model class that stores Account Name as Label and Account Id as value.
+ */
+ public class AccountWrapper {  
+      public String label { get; set; }  
+      public String value { get; set; }  
+      public AccountWrapper (String label, String value){  
+           this.label = label;  
+           this.value = value;  
+      }  
+  }
+     
+}
