@@ -1,0 +1,27 @@
+<apex:page controller="AutoCompleteAccount" tabStyle="Account">
+    <apex:form id="form">
+        <apex:pageBlock >
+           <apex:messages />
+           <c:AutoCompleteComponent />      
+           <apex:actionFunction name="showInfoForAccount" action="{!showAccountDetail}" reRender="form">  
+                     <apex:param assignTo="{!selectedAccountId}" name="selectedAccountId" value=""/>   
+            </apex:actionFunction>
+            <apex:pageBlockSection collapsible="true" title="Account Detail" rendered="{!accountDetailVisible}">
+               <apex:outputField value="{!selectedAccount.Name}"/>
+               <apex:outputField value="{!selectedAccount.AccountNumber}"/>
+               <apex:outputField value="{!selectedAccount.Website}"/>
+               <apex:outputField value="{!selectedAccount.Phone}"/>
+               <apex:outputField value="{!selectedAccount.Fax}"/>
+            </apex:pageBlockSection> 
+            <apex:pageBlockSection collapsible="true" title="Add Chatter Post" rendered="{!accountDetailVisible}" >
+                <apex:inputTextarea value="{!chatterPost}" style="width:600px;height:100px"/>
+                <apex:commandButton action="{!postChatterMessage}" value="Post" />
+            </apex:pageBlockSection> 
+        </apex:pageBlock>
+    </apex:form>
+    <script>
+         function showAccountDetail( accountId){
+            showInfoForAccount(accountId);
+         }
+    </script>
+</apex:page>
