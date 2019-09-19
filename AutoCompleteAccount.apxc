@@ -1,0 +1,34 @@
+public class AutoCompleteAccount {
+  
+  public String selectedAccountId {get;set;}
+  public boolean accountDetailVisible{get;set;}
+  public Account selectedAccount{get;set;}
+  public String chatterPost{get;set;}
+  
+  /*
+  * This method get called from action function when some selects the Account from auto complete. Along with this method
+  * selectedAccountId variable also get updated for accessing the Id. 
+  */   
+  public void showAccountDetail(){
+      selectedAccount = [Select Id,Name,Website,AccountNumber,Phone ,Fax FROM Account WHERE Id = :selectedAccountId LIMIT 1];
+      accountDetailVisible= true;
+  }
+  
+  /*
+  * This method is called on "Post" button click in "Add Chatter Post" Section. In this we are creating FeedItem object
+  * and assigning parentId as the selectedAccountId and body as the entered text in chatterPost.
+  */
+  public void postChatterMessage(){
+      if(chatterPost == null || chatterPost.trim().equals('')){
+          ApexPages.addMessage(new ApexPages.message(ApexPages.Severity.ERROR,'Please Enter chatter Message to Post.'));
+      }else{
+          FeedItem feed = new FeedItem();
+          feed.ParentId = selectedAccountId;
+          feed.Body = chatterPost;
+          insert feed;
+          ApexPages.addMessage(new ApexPages.message(ApexPages.Severity.INFO,'Your Message has been posted on Chatter'));
+          chatterPost = '';
+      }
+  }
+    
+}
